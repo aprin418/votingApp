@@ -1,0 +1,22 @@
+{
+    "paradePhotos": [
+      {
+        "name": "ford-mustang",
+        "srcUrl": "https://i.imgur.com/9e5w1CU.jpg",
+        "altText": "Mustang photo",
+        "votes": 0
+      },
+      {
+        "name": "chevy-camaro",
+        "srcUrl": "https://i.imgur.com/d87m0cP.jpg",
+        "altText": "Camaro photo",
+        "votes": 0
+      },
+      {
+        "name": "dodge-challenger",
+        "srcUrl": "https://i.imgur.com/DlzEIlK.jpg",
+        "altText": "Challenger photo",
+        "votes": 0
+      }
+    ]
+  }
