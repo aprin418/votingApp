@@ -5,6 +5,8 @@ const { LocalStorage } = require("node-localstorage"),
   localStorage = new LocalStorage("./scratch");
 const MongoClient = require("mongodb").MongoClient;
 const app = express();
+const server = require("http").createServer(app);
+const io = require("socket.io")(server, { cors: { origin: "*" } });
 
 app.set("view engine", "ejs");
 app.use(bodyParser.json());
