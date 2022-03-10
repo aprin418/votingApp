@@ -13,6 +13,18 @@ app.use(bodyParser.json());
 
 const userNotVoted = localStorage.getItem("car-vote");
 
+server.listen(3000, function () {
+  console.log("Listening on port 3000");
+});
+
+io.on("connection", (socket) => {
+  console.log("user connected " + socket.id);
+
+  socket.on("results", (data) => {
+    socket.broadcast.emit("results", data);
+  });
+});
+
 MongoClient.connect(
   "mongodb+srv://aprin418:justTemp@cluster0.92dc7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
   {
@@ -23,10 +35,6 @@ MongoClient.connect(
   console.log("connected to database");
   const db = client.db("car-voting-app");
   const collection = db.collection("votes");
-
-  app.listen(3000, function () {
-    console.log("Listening on port 3000");
-  });
 
   app.get("/vote/:name", (req, res) => {
     db.collection("votes")

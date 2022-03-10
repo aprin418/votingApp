@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,6 +14,10 @@
     <title>Voting app</title>
   </head>
   <body>
+    <script>
+      const socket = io("http://localhost:3000");
+      socket.on("connection");
+    </script>
     <% let total = 0; candidates.forEach((candidate) => { total +=
     parseInt(candidate.votes, 10); }); %>
     <div class="container">
@@ -38,13 +43,30 @@
             >Vote</a
           >
           <% } else { %>
-          <h5 class="votes-results text-center card-subtitle mb-2 text-muted">
+          <h5
+            class="votes-results text-center card-subtitle mb-2 text-muted"
+            data-car="<%= candidate.name %>"
+          >
             <%= candidate.votes %> out of <%= total %> votes
           </h5>
+          <script>
+            socket.emit(
+              "results",
+              "<%= candidate.name %>, <%= candidate.votes %> out of <%= total %> votes"
+            );
+          </script>
           <% } %>
         </form>
         <% }) %>
       </div>
     </div>
+    <script>
+      socket.on("results", (data) => {
+        console.log(data);
+        let input = data.split(",");
+        document.querySelector("[data-car=" + input[0] + "]").innerHTML =
+          input[1];
+      });
+    </script>
   </body>
 </html>
