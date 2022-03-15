@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 const candidates = require("../models/candidate_model");
+const { auth, requiresAuth } = require("express-openid-connect");
 
-router.get("/vote/:id", (req, res) => {
+router.get("/vote/:id", requiresAuth(), (req, res) => {
   candidates
     .findByIdAndUpdate(
       {
@@ -17,15 +18,12 @@ router.get("/vote/:id", (req, res) => {
     )
     .then((result) => {
       console.log(result);
-      candidates
-        .find()
-        // need to update variable names
-        .then((results) => {
-          res.render("index", {
-            candidates: results,
-            notVoted: false,
-          });
+      candidates.find().then((results) => {
+        res.render("index", {
+          candidates: results,
+          notVoted: false,
         });
+      });
     })
     .catch((error) => console.error(error));
 });
