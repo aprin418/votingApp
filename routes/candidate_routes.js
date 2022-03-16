@@ -1,4 +1,5 @@
 const express = require("express");
+const { requiresAuth } = require("express-openid-connect");
 const candidate_controller = require("../controllers/candidate_controller");
 const router = express.Router();
 
@@ -6,10 +7,18 @@ const router = express.Router();
 router.get("/", candidate_controller.candidate_index);
 
 // GET request for creating a Candidate. NOTE This must come before routes that display Candidate (uses id).
-router.get("/create", candidate_controller.candidate_create_get);
+router.get(
+  "/create",
+  requiresAuth(),
+  candidate_controller.candidate_create_get
+);
 
 // POST request for creating Candidate.
-router.post("/create", candidate_controller.candidate_create_post);
+router.post(
+  "/create",
+  requiresAuth(),
+  candidate_controller.candidate_create_post
+);
 
 // GET request for one Candidate.
 router.get("/:id", candidate_controller.candidate_detail);

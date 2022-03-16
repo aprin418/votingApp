@@ -8,6 +8,8 @@ const { ServerApiVersion } = require("mongodb");
 const cors = require("cors");
 const { Server } = require("socket.io");
 require("dotenv").config();
+const moment = require("moment");
+moment().format();
 
 const { auth } = require("express-openid-connect");
 

@@ -11,10 +11,11 @@
     />
     <link rel="stylesheet" href="/css/style.css" />
     <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script src="moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   </head>
 
   <body>
-    <!-- Scripts -->
     <script>
       const socket = io("http://localhost:3000");
       socket.on("connection");
@@ -35,21 +36,44 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
+          <% if(isAuthenticated) { %>
           <li class="nav-item active">
-            <a class="nav-link" href="#">Home</a>
+            <a class="nav-link" href="/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/login/">Login</a>
+            <a class="nav-link" href="/candidate/create">Create</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/logout/">Logout</a>
           </li>
+          <li class="nav-item" id="time" style="color: red"></li>
+          <% } else { %>
           <li class="nav-item">
-            <a class="nav-link" href="#">Countdown</a>
+            <a class="nav-link" href="/login/">Login</a>
           </li>
+          <% } %>
         </ul>
       </div>
     </nav>
+    <script>
+      const timeVoted = "<%= timeVoted %>";
+      if (timeVoted === "") {
+        document.getElementById("time").innerHTML = ``;
+      } else {
+        const momentVoted = moment(timeVoted);
+        const myInterval = setInterval(() => {
+          const countDownTime = moment.duration(momentVoted.diff(moment()));
+          const minutes = countDownTime.minutes();
+          const seconds = countDownTime.seconds();
+          const interval = moment(timeVoted).diff(moment());
+          document.getElementById("time").innerHTML = `${minutes} : ${seconds}`;
+          if (interval < 0) {
+            clearInterval(myInterval);
+            document.getElementById("time").innerHTML = `You can vote again!`;
+          }
+        }, 1000);
+      }
+    </script>
     <% let total = 0; candidates.forEach((candidate) => { total +=
     parseInt(candidate.votes, 10); }); %>
     <div id="container">
@@ -103,50 +127,3 @@
     </script>
   </body>
 </html>
-
-<!-- <!DOCTYPE html>
-  <body>
-
-    <div class="container">
-      <div class="row">
-        <div class="col-8 offset-2">
-          <h1>Vote for you favorite car</h1>
-        </div>
-      </div>
-      <div class="row">
-        <% candidates.forEach((candidate) => { %>
-        <form id="photo-container" class="photo-container card col-md-4 p3">
-          <img
-            src="<%= candidate.srcUrl %>"
-            alt="<%= candidate.altText %>"
-            class="photo card-img-top"
-          />
-          <h4><%= candidate.name %></h4>
-          <% if(notVoted) { %>
-          <a
-            class="btn btn-primary vote-btn"
-            type="button"
-            href="/vote/<%= candidate.name %>"
-            >Vote</a
-          >
-          <% } else { %>
-          <h5
-            class="votes-results text-center card-subtitle mb-2 text-muted"
-            data-car="<%= candidate.name %>"
-          >
-            <%= candidate.votes %> out of <%= total %> votes
-          </h5>
-          <script>
-            socket.emit(
-              "results",
-              "<%= candidate.name %>, <%= candidate.votes %> out of <%= total %> votes"
-            );
-          </script>
-          <% } %>
-        </form>
-        <% }) %>
-      </div>
-    </div>
-
-  </body>
-</html> -->

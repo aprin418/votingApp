@@ -13,26 +13,30 @@
 
   <body>
     <div class="container-fluid">
-      <form action="post" class="row">
+      <form action="create" class="row" method="POST">
         <div class="form-floating mb-3">
           <input
+            name="name"
             type="text"
             class="form-control"
             id="floatingInput"
             placeholder="Name"
+            required
           />
           <label for="floatingInput">Name</label>
         </div>
         <div class="form-floating">
           <input
+            name="srcUrl"
             type="text"
             class="form-control"
             id="floatingPassword"
             placeholder="Photo Url"
+            required
           />
           <label for="floatingPassword">PhotoUrl</label>
         </div>
-        <button type="submit">Upload</button>
+        <button class="btn btn-success" type="submit">Upload</button>
       </form>
     </div>
   </body>

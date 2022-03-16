@@ -27,6 +27,7 @@
     "express": "^4.17.3",
     "express-openid-connect": "^2.7.1",
     "express-session": "^1.17.2",
+    "moment": "^2.29.1",
     "mongodb": "^4.4.1",
     "mongoose": "^6.2.5",
     "node-localstorage": "^2.2.1",

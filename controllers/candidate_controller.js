@@ -45,14 +45,8 @@ exports.candidate_create_post = (req, res) => {
     srcUrl,
     altText,
   };
-  candidate.save().then((results) => {
-    res
-      .redirect("./candidate/index", {
-        candidates: results,
-        message: "New candidate added",
-      })
-      .catch((err) => console.error(err));
-  });
+  candidates.create(candidate);
+  res.redirect("/");
 };
 
 // Handle Candidate delete on POST.

@@ -44,36 +44,31 @@ router.get("/vote/:id", requiresAuth(), (req, res) => {
     }
   );
 
-  candidates
-    .findByIdAndUpdate(
-      {
-        _id: req.params.id,
+  candidates.findByIdAndUpdate(
+    {
+      _id: req.params.id,
+    },
+    {
+      $inc: {
+        votes: 1,
       },
-      {
-        $inc: {
-          votes: 1,
-        },
-        new: true,
-      },
-      (err, doc) => {
-        if (err) {
-          console.log(err);
-        }
+      new: true,
+    },
+    (err, doc) => {
+      if (err) {
+        console.log(err);
       }
-    )
-    .then((result) => {
-      console.log(result);
-      candidates.find().then((results) => {
-        users
-          .findOne({
-            email: email,
-          })
-          .then((user) => {
-            res.redirect("/");
-          });
+    }
+  );
+  candidates.find().then((results) => {
+    users
+      .findOne({
+        email: email,
+      })
+      .then((user) => {
+        res.redirect("/");
       });
-    })
-    .catch((error) => console.error(error));
+  });
 });
 
 router.get("/", (req, res) => {
@@ -96,6 +91,8 @@ router.get("/", (req, res) => {
             res.render("index", {
               candidates: results,
               notVoted: email === null ? false : true,
+              timeVoted: null,
+              isAuthenticated: req.oidc.isAuthenticated(),
             });
           } else {
             users
@@ -106,6 +103,8 @@ router.get("/", (req, res) => {
                 res.render("index", {
                   candidates: results,
                   notVoted: user.date <= new Date(),
+                  timeVoted: user.date,
+                  isAuthenticated: req.oidc.isAuthenticated(),
                 });
               });
           }
