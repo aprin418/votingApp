@@ -3,8 +3,47 @@ const router = express.Router();
 
 const candidates = require("../models/candidate_model");
 const { auth, requiresAuth } = require("express-openid-connect");
+const users = require("../models/user_model");
 
 router.get("/vote/:id", requiresAuth(), (req, res) => {
+  const date = new Date();
+  const newDate = new Date(date);
+  newDate.setHours(newDate.getHours() + 1);
+  const email = req.oidc.user.email;
+  users.findOne(
+    {
+      email: email,
+    },
+    (err, doc) => {
+      if (err) {
+        console.log(err);
+      }
+      if (doc === null) {
+        let user = {
+          name: req.oidc.user.name,
+          email: email,
+          date: newDate,
+        };
+        users.create(user);
+      } else {
+        users.findOneAndUpdate(
+          {
+            email: email,
+          },
+          {
+            date: newDate,
+            new: true,
+          },
+          (err, doc) => {
+            if (err) {
+              console.log(err);
+            }
+          }
+        );
+      }
+    }
+  );
+
   candidates
     .findByIdAndUpdate(
       {
@@ -14,70 +53,73 @@ router.get("/vote/:id", requiresAuth(), (req, res) => {
         $inc: {
           votes: 1,
         },
+        new: true,
+      },
+      (err, doc) => {
+        if (err) {
+          console.log(err);
+        }
       }
     )
     .then((result) => {
       console.log(result);
       candidates.find().then((results) => {
-        res.render("index", {
-          candidates: results,
-          notVoted: false,
-        });
+        users
+          .findOne({
+            email: email,
+          })
+          .then((user) => {
+            res.redirect("/");
+          });
       });
     })
     .catch((error) => console.error(error));
 });
 
-// retreive all candidates
 router.get("/", (req, res) => {
+  let email = null;
+  if (req.oidc.isAuthenticated()) {
+    email = req.oidc.user.email;
+  }
   candidates
     .find()
     .then((results) => {
-      res.render("index", {
-        candidates: results,
-        notVoted: true,
-      });
+      users.findOne(
+        {
+          email: email,
+        },
+        (err, doc) => {
+          if (err) {
+            console.log(err);
+          }
+          if (doc === null) {
+            res.render("index", {
+              candidates: results,
+              notVoted: email === null ? false : true,
+            });
+          } else {
+            users
+              .findOne({
+                email: email,
+              })
+              .then((user) => {
+                res.render("index", {
+                  candidates: results,
+                  notVoted: user.date <= new Date(),
+                });
+              });
+          }
+        }
+      );
     })
     .catch((err) => console.error(err));
 });
 
-// app.get("/vote/:name", (req, res) => {
-//   db.collection("votes")
-//     .updateOne(
-//       {
-//         name: req.params.name,
-//       },
-//       {
-//         $inc: {
-//           votes: 1,
-//         },
-//       }
-//     )
-//     .then((result) => {
-//       console.log(result);
-//       localStorage.setItem("car-vote", "voted");
-//       Votes.find()
-//         .toArray()
-//         .then((results) => {
-//           res.render("index.ejs", {
-//             candidates: results,
-//             notVoted: false,
-//           });
-//         });
-//     })
-//     .catch((error) => console.error(error));
-// });
-
-// app.get("/", (req, res) => {
-//   Votes.find()
-//     .toArray()
-//     .then((results) => {
-//       res.render("index.ejs", {
-//         candidates: results,
-//         notVoted: true,
-//       });
-//     })
-//     .catch((error) => console.error(error));
-// });
-
 module.exports = router;
+
+/* 
+Show total votes unless allowed to vote, if allowed to vote show buttons
+logged in auth0 user not in DB should see ability to vote - notVoted: true
+logged in auth0 user in DB should see ability to vote if after an hour, less than an hour should see totals of votes notVoted: new Date() >= newDate
+logged out user should see buttons but be prompted to log in when voting notVoted: false
+*/
