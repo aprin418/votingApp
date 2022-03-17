@@ -13,14 +13,14 @@
 
   <body>
     <div class="container-fluid">
-      <form action="create" class="row" method="POST">
+      <form action="update" class="row" method="POST">
         <div class="form-floating mb-3">
           <input
             name="name"
             type="text"
             class="form-control"
             id="floatingInput"
-            placeholder="Name"
+            value="<%= candidate.name %>"
             required
           />
           <label for="floatingInput">Name</label>
@@ -31,12 +31,12 @@
             type="text"
             class="form-control"
             id="floatingPassword"
-            placeholder="Photo Url"
+            value="<%= candidate.srcUrl %>"
             required
           />
           <label for="floatingPassword">PhotoUrl</label>
         </div>
-        <button class="btn btn-success" type="submit">Upload</button>
+        <button class="btn btn-success" type="submit">Update</button>
       </form>
     </div>
   </body>

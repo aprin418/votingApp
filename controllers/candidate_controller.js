@@ -63,9 +63,14 @@ exports.candidate_delete_get = (req, res) => {
 // Handle Candidate delete on POST.
 exports.candidate_delete_post = (req, res) => {
   console.log("DELETE");
-  candidates.findByIdAndDelete({ _id: req.params.id }, (err) => {
-    console.log(err);
-  });
+  candidates.findByIdAndDelete(
+    {
+      _id: req.params.id,
+    },
+    (err) => {
+      console.log(err);
+    }
+  );
   res.redirect("/");
 };
 
@@ -81,32 +86,33 @@ exports.candidate_update_get = (req, res) => {
 
 // Handle candidate update on POST.
 exports.candidate_update_post = (req, res) => {
-  candidates
-    .findByIdAndUpdate(
-      {
-        _id: req.params.id,
-      },
-      {
-        name: req.body.name,
-      },
-      {
-        srcUrl: req.body.srcUrl,
-      },
-      {
-        altText: req.body.name + " photo",
-      },
-      {
-        upsert: true,
-      }
-    )
-    .then((result) => {
-      console.log(result);
-      candidates.findById(req.params.id).then((result) => {
-        res.render("./candidate/update", {
-          candidate: result,
-          notVoted: false,
-        });
-      });
-    })
-    .catch((error) => console.error(error));
+  console.log("UPDATE");
+  candidates.findByIdAndUpdate(
+    {
+      _id: req.params.id,
+    },
+    {
+      name: req.body.name,
+      srcUrl: req.body.srcUrl,
+      altText: req.body.name + " photo",
+    },
+    {
+      upsert: true,
+    },
+    (err) => {
+      console.log(err);
+    }
+  );
+  res.redirect("/");
+  // .then((result) => {
+  //   console.log(result);
+  //   candidates.findById(req.params.id).then((result) => {
+  //     res.render("./candidate/update", {
+  //       candidate: result,
+  //       notVoted: false,
+  //       createdBy,
+  //     });
+  //   });
+  // })
+  // .catch((error) => console.error(error));
 };

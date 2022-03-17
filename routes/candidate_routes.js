@@ -37,9 +37,17 @@ router.post(
 );
 
 // GET request to update Candidate.
-router.get("/:id/update", candidate_controller.candidate_update_get);
+router.get(
+  "/:id/update",
+  requiresAuth(),
+  candidate_controller.candidate_update_get
+);
 
 // POST request to update Candidate.
-router.post("/:id/update", candidate_controller.candidate_update_post);
+router.post(
+  "/:id/update",
+  requiresAuth(),
+  candidate_controller.candidate_update_post
+);
 
 module.exports = router;
