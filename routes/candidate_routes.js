@@ -21,10 +21,20 @@ router.post(
 );
 
 // GET request for one Candidate.
-router.get("/:id", candidate_controller.candidate_detail);
+router.get("/:id", requiresAuth(), candidate_controller.candidate_detail);
+
+router.get(
+  "/:id/delete",
+  requiresAuth(),
+  candidate_controller.candidate_delete_get
+);
 
 // POST request to delete Candidate.
-router.post("/:id/delete", candidate_controller.candidate_delete_post);
+router.post(
+  "/:id/delete",
+  requiresAuth(),
+  candidate_controller.candidate_delete_post
+);
 
 // GET request to update Candidate.
 router.get("/:id/update", candidate_controller.candidate_update_get);

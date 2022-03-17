@@ -19,10 +19,10 @@ exports.candidate_detail = (req, res) => {
     .findOne({
       _id: req.params.id,
     })
-    .then((detail_candidate) => {
+    .then((candidate_details) => {
       res.render("./candidate/detail", {
-        title: detail_candidate.name + " Detail",
-        candidate_detail: detail_candidate,
+        name: candidate_details.name,
+        candidate_details: candidate_details,
       });
     })
     .catch((err) => console.error(err));
@@ -51,16 +51,22 @@ exports.candidate_create_post = (req, res) => {
   res.redirect("/");
 };
 
+exports.candidate_delete_get = (req, res) => {
+  candidates.findById(req.params.id).then((result) => {
+    res.render("./candidate/delete", {
+      title: "Update " + result.name,
+      candidate: result,
+    });
+  });
+};
+
 // Handle Candidate delete on POST.
 exports.candidate_delete_post = (req, res) => {
-  candidates
-    .findByIdAndDelete(req.params.id)
-    .then((results) => {
-      res.json({
-        redirect: "./candidate/index",
-      });
-    })
-    .catch((error) => console.error(error));
+  console.log("DELETE");
+  candidates.findByIdAndDelete({ _id: req.params.id }, (err) => {
+    console.log(err);
+  });
+  res.redirect("/");
 };
 
 // Display Candidate update form on GET.

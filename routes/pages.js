@@ -93,6 +93,7 @@ router.get("/", (req, res) => {
               notVoted: email === null ? false : true,
               timeVoted: null,
               isAuthenticated: req.oidc.isAuthenticated(),
+              email: email,
             });
           } else {
             users
@@ -105,6 +106,7 @@ router.get("/", (req, res) => {
                   notVoted: user.date <= new Date(),
                   timeVoted: user.date,
                   isAuthenticated: req.oidc.isAuthenticated(),
+                  email: email,
                 });
               });
           }
@@ -121,4 +123,10 @@ Show total votes unless allowed to vote, if allowed to vote show buttons
 logged in auth0 user not in DB should see ability to vote - notVoted: true
 logged in auth0 user in DB should see ability to vote if after an hour, less than an hour should see totals of votes notVoted: new Date() >= newDate
 logged out user should see buttons but be prompted to log in when voting notVoted: false
+*/
+
+/* 
+show delete button if user(email) is the same as the creator of the candidate
+delete the candidate(by id) from DB
+
 */

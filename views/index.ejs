@@ -92,6 +92,18 @@
           />
           <h4 class="photo_name card-title my-3"><%= candidate.name %></h4>
 
+          <% if(candidate.createdBy === email) {%>
+          <a
+            class="btn btn-danger"
+            type="button"
+            href="/candidate/<%= candidate.id %>"
+            >Delete</a
+          >
+          <% } else { %>
+          <h6></h6>
+          <% } %>
+          <br />
+
           <% if (notVoted) { %>
           <a
             class="btn btn-primary vote_btn"
