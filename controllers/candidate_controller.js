@@ -40,10 +40,12 @@ exports.candidate_create_post = (req, res) => {
   const name = req.body.name;
   const srcUrl = req.body.srcUrl;
   const altText = name + " photo";
+  const createdBy = req.oidc.user.email;
   let candidate = {
     name,
     srcUrl,
     altText,
+    createdBy,
   };
   candidates.create(candidate);
   res.redirect("/");

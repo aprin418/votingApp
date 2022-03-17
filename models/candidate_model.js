@@ -15,6 +15,10 @@ const candidate = new Schema({
     type: String,
     default: null,
   },
+  createdBy: {
+    type: String,
+    required: true,
+  },
   votes: {
     type: Number,
     default: 0,
